@@ -7,11 +7,12 @@ dbConnect();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const movie = require("./src /router/movie")
-const user = require("./src /router/user")
-const auth = require("./src /router/auth")
 
-app.use(movie, user,auth )
+app.use('/api/user', require("./src /router/user"))
+// app.use('/api/movie', require("./src /router/movie"))
+app.use('/api/auth', require("./src /router/auth"))
+
+
 const PORT = process.env.PORT || 1900;
 
 app.listen(PORT, () => {

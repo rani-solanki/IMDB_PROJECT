@@ -20,10 +20,10 @@ router.get('/auth',auth,async(req,res) =>{
 // user or admin login
 const validation = [
     check('email','please inclde unique and valid email'),
-    check('passward','please enter the sward passward').isLength({min:6})
+    check('password','please enter the password').isLength({min:6})
 ]
 
-router.post('/login', validation, async (req, res) => {
+router.post('/login', validation, auth, async (req, res) => {
     
     const errors =validationResult(req);
     if(!errors.isEmpty()){
@@ -31,18 +31,17 @@ router.post('/login', validation, async (req, res) => {
     }
 
     // Done validation 
-    const{email,passward} = req.body;
+    const{email,password} = req.body;
     try{
         //see user exit
         let user = await User.findOne({email });
         if(!user){
             return res.status(400).json({errors:[{msg:"invalid email or password"}]})
         }
-        const isMatch= await bcrypt.compare(passward,user.passward);
+        const isMatch= await bcrypt.compare(password,user.password);
         if(!isMatch){
             return res.status(400).json({ errors: [{ msg:"invalid email or password"}]})
         }
-        
         const payload={
             user:{
                 id:user._id
