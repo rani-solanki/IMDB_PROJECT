@@ -17,46 +17,50 @@ router.get('/auth',auth,async(req,res) =>{
     }
 })
 
-// user or admin login
-const validation = [
-    check('email','please inclde unique and valid email'),
-    check('password','please enter the password').isLength({min:6})
+    // / user or admin login
+const valid = [
+    check('email', 'please inclde unique and valid email'),
+    check('password', 'please enter the sward password').isLength({ min: 6 })
 ]
 
-router.post('/login', validation, auth, async (req, res) => {
-    
-    const errors =validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors: errors.array()});
+router.post('/login', valid,auth, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     }
 
     // Done validation 
-    const{email,password} = req.body;
-    try{
-        //see user exit
-        let user = await User.findOne({email });
-        if(!user){
-            return res.status(400).json({errors:[{msg:"invalid email or password"}]})
+    const { email, password } = req.body;
+
+    try {
+        //see user exite
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ errors: [{ msg: "invalid Email or password" }] })
         }
-        const isMatch= await bcrypt.compare(password,user.password);
-        if(!isMatch){
-            return res.status(400).json({ errors: [{ msg:"invalid email or password"}]})
+    
+        const isMatch = await bcrypt.compare(password, user.password);
+    
+        if (!isMatch) {
+            return res.status(400).json({ errors: [{ msg: "invalid password" }] })
         }
-        const payload={
-            user:{
-                id:user._id
+
+        const payload = {
+            user: {
+                id: user._id
             }
         }
+
         jwt.sign(payload,
             config.jwtSecret,
-            {expiresIn:360000},(err,token)=>{
-                if(err)throw err;
-                res.json({token});
+            { expiresIn: 360000 }, (err, token) => {
+                if (err) throw err;
+                res.json({ token });
             });
     }
-    catch(err){
+    catch (err) {
         console.log(err)
         res.status(500).send('server error')
     }
 })
-module.exports=router
+module.exports = router

@@ -9,10 +9,6 @@ const Movie = new Schema({
     Year: {
         type: String,
     },
-    Poster: {
-        type: String,
-        required: true
-    },
     Actors: {
         type: String,
         required:true

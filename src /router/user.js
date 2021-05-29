@@ -16,8 +16,8 @@ check('isAdmin', 'please enter the isAdmin').not().isEmpty()
 router.post('/signin', validation, async (req, res) => {
     console.log(req.body)
     const error = validationResult(req)
-    if (!error.isEmpty()) {
-        res.status(400).json({ error: error.array() })
+    if (!error.isEmpty()){
+            res.status(400).json({ error: error.array()})
     }
 
     const { name, email, password, isAdmin } = req.body;
@@ -35,9 +35,8 @@ router.post('/signin', validation, async (req, res) => {
         })
 
         const salt = await bcrypt.genSalt(10);
-        user.passward = await bcrypt.hash(password, salt)
+        user.password = await bcrypt.hash(password, salt)
         await user.save();
-
         const payload = {
             user: {
                 id: user.id
@@ -49,7 +48,6 @@ router.post('/signin', validation, async (req, res) => {
                 res.json({ token });
             });
         await user.save();
-        
 
         res.send("user rgisered")
     }

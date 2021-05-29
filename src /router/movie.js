@@ -1,21 +1,27 @@
-const express = require('express').Router();
+const router = require('express').Router();
 const { check, validationResult } = require('express-validator');
 const Movie = require('../models/movieSchema');
+const jsonData = require('./movieData.json')
 const fs = require('fs');
+const User = require('../models/userSchema');
 
-router.post('/movie', async (res, req) => {
-    const error = validationResult(req)
-    if (!error.isEmpty()) {
-        res.status(400).json({ error: error.array() })
-    }
-    try {
-        let rawdata = fs.readFileSync('movieData.json');
-        let student = JSON.parse(rawdata);
-        console.log(student);
-
-    } catch (err) {
-        console.error(err)
-    }
+fs.readFile("movieData.json", function (err, data) {
+    if (err) throw err;
+    jsonData = JSON.parse(data);
+    console.log(jsonData)
 })
 
-module.exportsm = router;
+// router.post('/movie', async (res, req,data) => {
+//     try {
+//         const user = await User.findOne({ id:req._id });
+//         if (user.isAdmin == true) {
+            
+//             const movies = await res.send(data)
+//             console.log(movies)
+//         }
+//     } catch (err){
+//         console.error(err)
+//     }
+// })
+
+module.exports = router;
